@@ -23,21 +23,29 @@
 # При окончательном выборе кафе предлагает забронировать столик для этого просит ввести номер телефона и время прихода
 
 import telebot
- 
+from telebot import types
+
 TOKEN = '1811415738:AAERwHlquzMu5syFJQKdWzHVhcjzcIKSOGw'
 bot = telebot.TeleBot(TOKEN)
 
+@bot.message_handler(commands=['help'])
+def help_def(message):
+    bot.send_message(message.from_user.id, "Напиши Привет")
 
-# @bot.message_handler(commands=['help'])
-# def help_def(message):
-#     bot.send_message(message.from_user.id, "Напиши Привет")
-#     bot.send_message(message.chat.id, "Напиши Привет")
+@bot.message_handler(content_types=['text']) 
+def get_text_messages(message): 
+    if message.text == "Привет": 
+        main_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        
+        button1 = types.KeyboardButton('Кафе')
+        button2 = types.KeyboardButton('Бизнес-зал') 
+        button3 = types.KeyboardButton('Аптека')
+        button4 = types.KeyboardButton('Регистрация')
+        button5 = types.KeyboardButton('Саморегистрация')
 
-# @bot.message_handler(content_types=['text']) 
-# def get_text_messages(message): 
-# 	if message.text == "Привет": 
-# 		bot.send_message(message.from_user.id, "Привет, я бот Аэропорта 'Краснодар', выбери нужную кнопку и я помогу тебе.") 
-# 	else: 
-# 		bot.send_message(message.from_user.id, "Я тебя не понимаю. напиши /help.")
+        main_markup.add(button1, button2, button3, button4, button5)
+        bot.send_message(message.chat.id, "Привет, я бот Аэропорта 'Краснодар'. \nВыбери нужную кнопку и я помогу тебе. ", reply_markup = main_markup)
+    else: 
+        bot.send_message(message.chat.id, "Я тебя не понимаю. напиши /help.")
 
 bot.polling()
